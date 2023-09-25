@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ServeStaticModule} from "@nestjs/serve-static";
 import {join} from "path";
 import {User} from "./auth/entities/user.entity";
+import { CommonModule } from './common/common.module';
 
 
 
@@ -27,6 +28,7 @@ import {User} from "./auth/entities/user.entity";
       synchronize: false,
       options: { encrypt: false },
     }),
+    CommonModule,
   ],
   controllers: [],
   providers: [],

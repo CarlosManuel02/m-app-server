@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import {PaginationDto} from "../common/dtos/pagination.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +19,8 @@ export class AuthController {
   }
 
   @Get("all")
-  findAll() {
-    return this.authService.findAll();
+  findAll(pagination: PaginationDto) {
+    return this.authService.findAll(pagination);
   }
 
   @Get(':id')

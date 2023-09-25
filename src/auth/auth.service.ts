@@ -6,6 +6,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {v4 as uuidv4} from 'uuid';
 import * as bcrypt from 'bcrypt';
+import {PaginationDto} from "../common/dtos/pagination.dto";
 
 @Injectable()
 export class AuthService {
@@ -38,8 +39,13 @@ export class AuthService {
         return await this.authRepository.save(auth);
     }
 
-    findAll() {
-        return this.authRepository.query('SELECT id, username, email FROM users')
+    findAll(Pagination: PaginationDto) {
+        const {limit = 10, offset = 0} = Pagination;
+
+        return this.authRepository.find({
+            skip: offset,
+            take: limit,
+        });
     }
 
     async findOne(id: number) {
