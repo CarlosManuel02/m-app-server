@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {CreateAuthDto} from './dto/create-auth.dto';
 import {UpdateAuthDto} from './dto/update-auth.dto';
-import {Auth} from "./entities/auth.entity";
+import {User} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {v4 as uuidv4} from 'uuid';
@@ -11,8 +11,8 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
 
     constructor(
-        @InjectRepository(Auth)
-        private readonly authRepository: Repository<Auth>,
+        @InjectRepository(User)
+        private readonly authRepository: Repository<User>,
     ) {
     }
 
@@ -21,9 +21,13 @@ export class AuthService {
 
         createAuthDto.role = 'user';
 
-        // TODO: Validar que el usuario no exista
+        const user = await this.authRepository.findOneBy({email: createAuthDto.email});
+        if (user) {
+            return {
+                message: 'El usuario ya existe'
+            }
+        }
 
-        // TODO: Encriptar contraseña
         createAuthDto.salt = await bcrypt.genSalt(10);
         createAuthDto.password = await bcrypt.hash(createAuthDto.password, createAuthDto.salt);
 
@@ -38,15 +42,15 @@ export class AuthService {
         return this.authRepository.query('SELECT id, username, email FROM users')
     }
 
-    async findOne(id: number): Promise<Auth> {
+    async findOne(id: number) {
         const auth = this.authRepository.findOneBy({id})
             .then((auth) => {
                 if (!auth) {
-                    return null;
+                    return {message: 'Usuario no encontrado'}
                 }
                 return auth;
             }, (err) => {
-                return null;
+                return {message: 'Error al buscar el usuario', err}
             });
         return await auth;
     }
@@ -97,7 +101,7 @@ export class AuthService {
 
     async login(createAuthDto: CreateAuthDto) {
         const {id, username, email, password} = createAuthDto;
-        const user = await this.findOne(id);
+        const user = await this.authRepository.findOneBy({email});
 
         if (user && await user.validatePassword(password)) {
 
