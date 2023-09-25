@@ -1,9 +1,9 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CreateAuthDto} from './dto/create-auth.dto';
 import {UpdateAuthDto} from './dto/update-auth.dto';
 import {User} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {DataSource, Repository} from "typeorm";
 import {v4 as uuidv4} from 'uuid';
 import * as bcrypt from 'bcrypt';
 import {PaginationDto} from "../common/dtos/pagination.dto";
@@ -14,6 +14,8 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly authRepository: Repository<User>,
+        private readonly datasource: DataSource
+
     ) {
     }
 
@@ -62,25 +64,24 @@ export class AuthService {
     }
 
     async update(id: number, updateAuthDto: UpdateAuthDto) {
-        const auth = await this.authRepository.findOneBy({id})
 
-        if (!auth) {
-            return {
-                message: 'Usuario no encontrado'
-            }
-        }
-        try {
-            const newAuth = await this.authRepository.update(id, updateAuthDto);
-            return {
-                message: 'Usuario actualizado correctamente',
-                newAuth
-            }
-        } catch (e) {
-            return {
-                message: 'Error al actualizar el usuario',
-                e
-            }
-        }
+        const user = await this.authRepository.preload({
+            id: id,
+            ...updateAuthDto
+        });
+
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+
+        const queryRunner = this.datasource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        await queryRunner.manager.save(user);
+
+        await queryRunner.commitTransaction();
+        await queryRunner.release();
+
+        return user;
     }
 
     async remove(id: number) {
