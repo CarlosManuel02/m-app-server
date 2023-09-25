@@ -57,6 +57,7 @@ export class AuthService {
     }
 
     async findBy(term: string) {
+        console.log('term', term)
         let user: User;
         if (isUUID(term)) {
             user = await this.authRepository.findOneBy({id: term})
