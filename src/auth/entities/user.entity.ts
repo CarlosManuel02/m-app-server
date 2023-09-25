@@ -4,38 +4,38 @@ import * as bcrypt from 'bcrypt';
 @Entity({
     name: 'Users'
 })
-export class Auth {
+export class User {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
     })
     username: string;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
     })
     email: string;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
     })
     password: string;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
 
     })
     role: string;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
     })
     jwt: string;
 
-    @Column('text', {
+    @Column('varchar', {
         nullable: false,
     })
     salt: string;

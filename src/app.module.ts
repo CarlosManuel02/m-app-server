@@ -4,6 +4,7 @@ import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ServeStaticModule} from "@nestjs/serve-static";
 import {join} from "path";
+import {User} from "./auth/entities/user.entity";
 
 
 
@@ -22,8 +23,8 @@ import {join} from "path";
       database: process.env.DB_NAME,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      autoLoadEntities: true,
-      synchronize: true,
+      entities: [User],
+      synchronize: false,
       options: { encrypt: false },
     }),
   ],
