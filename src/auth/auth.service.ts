@@ -7,6 +7,7 @@ import {DataSource, Repository} from "typeorm";
 import {v4 as uuidv4} from 'uuid';
 import * as bcrypt from 'bcrypt';
 import {PaginationDto} from "../common/dtos/pagination.dto";
+import {JwtService} from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,8 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly authRepository: Repository<User>,
-        private readonly datasource: DataSource
+        private readonly datasource: DataSource,
+        private readonly jwtService: JwtService,
 
     ) {
     }
@@ -35,7 +37,7 @@ export class AuthService {
         createAuthDto.password = await bcrypt.hash(createAuthDto.password, createAuthDto.salt);
 
         // TODO: Generar token JWT
-        createAuthDto.jwt = '1234567890-1234567890-1234567890-1234567890';
+        createAuthDto.jwt = await this.generateJWT(createAuthDto);
 
         const auth = this.authRepository.create(createAuthDto);
         return await this.authRepository.save(auth);
@@ -108,17 +110,17 @@ export class AuthService {
 
     async login(createAuthDto: CreateAuthDto) {
         const {id, username, email, password} = createAuthDto;
-        const user = await this.authRepository.findOneBy({email});
+        const queryBuilder = this.authRepository.createQueryBuilder('user')
+        const user = await queryBuilder
+            .where('user.email = :email AND user.username = :username', {email, username})
+            .getOne();
 
         if (user && await user.validatePassword(password)) {
 
             // TODO: Generar token JWT
-            user.jwt = this.generateJWT();
+            user.jwt = await this.generateJWT(user);
 
             return {
-                id: user.id,
-                username: user.username,
-                email: user.email,
                 jwt: user.jwt
             }
 
@@ -131,7 +133,12 @@ export class AuthService {
 
     }
 
-    generateJWT() {
-        return '1234567890-1234567890-1234567890-1234567890';
+    async generateJWT(createAuthDto: CreateAuthDto | User) {
+        const payload = {
+            username: createAuthDto.username,
+            email: createAuthDto.email,
+            role: createAuthDto.role
+        }
+        return await this.jwtService.sign(payload);
     }
 }
