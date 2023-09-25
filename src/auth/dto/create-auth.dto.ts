@@ -5,7 +5,7 @@ export class CreateAuthDto {
     @IsInt()
     @IsPositive()
     @IsOptional()
-    id: number;
+    id: string;
 
     @IsString()
     @MinLength(4)

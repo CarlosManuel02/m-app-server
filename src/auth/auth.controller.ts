@@ -23,18 +23,18 @@ export class AuthController {
     return this.authService.findAll(pagination);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.authService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.authService.findBy(term);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateAuthDto: UpdateAuthDto) {
+  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
     return this.authService.update(id, updateAuthDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return this.authService.remove(id);
   }
 }

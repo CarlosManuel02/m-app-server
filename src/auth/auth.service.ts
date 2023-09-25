@@ -1,10 +1,10 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateAuthDto} from './dto/create-auth.dto';
 import {UpdateAuthDto} from './dto/update-auth.dto';
 import {User} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DataSource, Repository} from "typeorm";
-import {v4 as uuidv4} from 'uuid';
+import {v4 as uuidv4, validate as isUUID} from 'uuid';
 import * as bcrypt from 'bcrypt';
 import {PaginationDto} from "../common/dtos/pagination.dto";
 import {JwtService} from "@nestjs/jwt";
@@ -56,20 +56,25 @@ export class AuthService {
         });
     }
 
-    async findOne(id: number) {
-        const auth = this.authRepository.findOneBy({id})
-            .then((auth) => {
-                if (!auth) {
-                    return {message: 'Usuario no encontrado'}
-                }
-                return auth;
-            }, (err) => {
-                return {message: 'Error al buscar el usuario', err}
-            });
-        return await auth;
+    async findBy(term: string) {
+        let user: User;
+        if (isUUID(term)) {
+            user = await this.authRepository.findOneBy({id: term})
+        } else {
+            const queryBuilder = this.authRepository.createQueryBuilder('user');
+            user = await queryBuilder
+                .where('email = :email OR username = :username', {
+                    email: term,
+                    username: term
+                }).getOne()
+        }
+        if (!user) {
+            throw new BadRequestException('Usuario no encontrado');
+        }
+        return user;
     }
 
-    async update(id: number, updateAuthDto: UpdateAuthDto) {
+    async update(id: string, updateAuthDto: UpdateAuthDto) {
 
         const user = await this.authRepository.preload({
             id: id,
@@ -90,8 +95,8 @@ export class AuthService {
         return user;
     }
 
-    async remove(id: number) {
-        const auth = await this.findOne(id)
+    async remove(id: string) {
+        const auth = await this.findBy(id)
 
         if (!auth) {
             return {
@@ -114,14 +119,10 @@ export class AuthService {
 
     async login(createAuthDto: CreateAuthDto) {
         const {id, username, email, password} = createAuthDto;
-        const queryBuilder = this.authRepository.createQueryBuilder('user')
-        const user = await queryBuilder
-            .where('user.email = :email AND user.username = :username', {email, username})
-            .getOne();
+        const user = await this.findBy(email)
 
         if (user && await user.validatePassword(password)) {
 
-            // TODO: Generar token JWT
             const token = await this.generateJWT(user);
 
             return {
