@@ -26,10 +26,6 @@ export class CreateAuthDto {
 
     @IsString()
     @IsOptional()
-    jwt: string;
-
-    @IsString()
-    @IsOptional()
     salt: string;
 
 }

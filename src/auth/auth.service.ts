@@ -37,10 +37,14 @@ export class AuthService {
         createAuthDto.password = await bcrypt.hash(createAuthDto.password, createAuthDto.salt);
 
         // TODO: Generar token JWT
-        createAuthDto.jwt = await this.generateJWT(createAuthDto);
+        const token = await this.generateJWT(createAuthDto);
 
         const auth = this.authRepository.create(createAuthDto);
-        return await this.authRepository.save(auth);
+        await this.authRepository.save(auth);
+        return {
+            ...auth,
+            token
+        }
     }
 
     findAll(Pagination: PaginationDto) {
@@ -118,10 +122,10 @@ export class AuthService {
         if (user && await user.validatePassword(password)) {
 
             // TODO: Generar token JWT
-            user.jwt = await this.generateJWT(user);
+            const token = await this.generateJWT(user);
 
             return {
-                jwt: user.jwt
+                token
             }
 
         } else {

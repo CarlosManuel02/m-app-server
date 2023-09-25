@@ -33,11 +33,6 @@ export class User {
     @Column('varchar', {
         nullable: false,
     })
-    jwt: string;
-
-    @Column('varchar', {
-        nullable: false,
-    })
     salt: string;
 
     async validatePassword(password: string): Promise<boolean> {
