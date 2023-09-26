@@ -7,6 +7,7 @@ import {join} from "path";
 import {User} from "./auth/entities/user.entity";
 import { CommonModule } from './common/common.module';
 import { CategoriesModule } from './categories/categories.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 
 
@@ -31,6 +32,7 @@ import { CategoriesModule } from './categories/categories.module';
     }),
     CommonModule,
     CategoriesModule,
+    TransactionsModule,
   ],
   controllers: [],
   providers: [],

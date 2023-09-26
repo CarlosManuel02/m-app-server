@@ -3,10 +3,8 @@ import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 @Entity({name: 'transactions'})
 export class Transaction {
 
-    @PrimaryGeneratedColumn({
-        type: 'int',
-    })
-    id: number;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
     @Column({
         type: 'varchar',
