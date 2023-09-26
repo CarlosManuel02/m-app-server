@@ -10,9 +10,6 @@ export class CreateTransactionDto {
     @IsIn(['income', 'expense'])
     type: string;
 
-    @IsString()
-    from: string;
-
     @IsInt()
     amount: number;
 
@@ -20,10 +17,16 @@ export class CreateTransactionDto {
     @IsOptional()
     description: string;
 
-    @IsDate()
-    date: Date;
+    @IsString()
+    date: string;
 
-    @IsInt()
-    @IsPositive()
-    categoryId: number;
+    @IsString()
+    categoryId: string;
+
+    @IsString()
+    accountId: string;
+
+    @IsString()
+    userId: string;
+
 }

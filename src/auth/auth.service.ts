@@ -154,6 +154,7 @@ export class AuthService {
     async addAccount(createAccountDto: CreateAccountDto) {
         const user = await this.findBy(createAccountDto.userId);
         if (!user) throw new NotFoundException('Usuario no encontrado');
+        console.log(createAccountDto)
 
         try {
             createAccountDto.id = uuidv4();
@@ -171,5 +172,38 @@ export class AuthService {
             }
         }
 
+    }
+
+    async getBalance(accountId: string) {
+        const account = await this.accountRepository.findOneBy({id: accountId});
+        if (!account) throw new NotFoundException('Cuenta no encontrada');
+
+        return {
+            balance: account.balance
+        }
+
+    }
+
+    async findAccountById(userId: string, accountId: string) {
+        const user = await this.findBy(userId);
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+
+        const account = await this.accountRepository.findOneBy({id: accountId});
+        if (!account) throw new NotFoundException('Cuenta no encontrada');
+
+        return account;
+    }
+
+    async updateAccount(account: Account) {
+        const queryRunner = this.datasource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        await queryRunner.manager.save(account);
+
+        await queryRunner.commitTransaction();
+        await queryRunner.release();
+
+        return account;
     }
 }

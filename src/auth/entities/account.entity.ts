@@ -14,8 +14,10 @@ export class Account{
     })
     name: string;
 
-    @Column('bigint', {
+    @Column('decimal', {
         nullable: false,
+        precision: 10,
+        scale: 2,
     })
     balance: number;
 

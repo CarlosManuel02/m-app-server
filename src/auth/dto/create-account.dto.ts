@@ -1,4 +1,4 @@
-import {IsInt, IsOptional, IsPositive, IsString, IsUUID, MinLength} from "class-validator";
+import {IsDecimal, IsInt, IsOptional, IsPositive, IsString, IsUUID, MinLength} from "class-validator";
 
 export class CreateAccountDto {
 

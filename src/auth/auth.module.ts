@@ -30,7 +30,9 @@ import {Account} from "./entities";
     ],
     exports: [
         JwtStrategy,
-        PassportModule
+        PassportModule,
+        AuthService,
+        TypeOrmModule
     ]
 })
 export class AuthModule {
