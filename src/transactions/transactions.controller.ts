@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, Query} from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -14,13 +14,13 @@ export class TransactionsController {
   }
 
   @Get()
-  findAll(pagination: PaginationDto) {
+  findAll(@Query() pagination: PaginationDto) {
     return this.transactionsService.findAll(pagination);
   }
 
   @Get(':term')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(id);
+  findOne(@Param('term') term: string) {
+    return this.transactionsService.findOne(term);
   }
 
   @Patch(':id')
@@ -32,4 +32,14 @@ export class TransactionsController {
   remove(@Param('id') id: string) {
     return this.transactionsService.remove(id);
   }
+
+    @Get('user/:id')
+    findByUser(@Param('id') id: string) {
+        return this.transactionsService.getTransactionsByUser(id);
+    }
+
+    @Get('account/:id')
+    findByAccount(@Param('id') id: string) {
+        return this.transactionsService.getTransactionsByAccount(id);
+    }
 }
