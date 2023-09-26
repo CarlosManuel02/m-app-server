@@ -6,6 +6,7 @@ import {ServeStaticModule} from "@nestjs/serve-static";
 import {join} from "path";
 import {User} from "./auth/entities/user.entity";
 import { CommonModule } from './common/common.module';
+import { CategoriesModule } from './categories/categories.module';
 
 
 
@@ -24,11 +25,12 @@ import { CommonModule } from './common/common.module';
       database: process.env.DB_NAME,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      entities: [User],
+      entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: false,
       options: { encrypt: false },
     }),
     CommonModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
