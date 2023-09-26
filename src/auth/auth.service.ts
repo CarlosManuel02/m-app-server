@@ -8,6 +8,8 @@ import {v4 as uuidv4, validate as isUUID} from 'uuid';
 import * as bcrypt from 'bcrypt';
 import {PaginationDto} from "../common/dtos/pagination.dto";
 import {JwtService} from "@nestjs/jwt";
+import {CreateAccountDto} from "./dto/create-account.dto";
+import {Account} from "./entities";
 
 @Injectable()
 export class AuthService {
@@ -15,9 +17,10 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly authRepository: Repository<User>,
+        @InjectRepository(Account)
+        private readonly accountRepository: Repository<Account>,
         private readonly datasource: DataSource,
         private readonly jwtService: JwtService,
-
     ) {
     }
 
@@ -146,5 +149,27 @@ export class AuthService {
             role: createAuthDto.role
         }
         return await this.jwtService.sign(payload);
+    }
+
+    async addAccount(createAccountDto: CreateAccountDto) {
+        const user = await this.findBy(createAccountDto.userId);
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+
+        try {
+            createAccountDto.id = uuidv4();
+            const account = this.accountRepository.create(createAccountDto);
+            await this.accountRepository.save(account);
+            return {
+                account,
+                message: 'Cuenta agregada correctamente'
+            }
+
+        } catch (e) {
+            return {
+                message: 'Error al agregar la cuenta',
+                e
+            }
+        }
+
     }
 }

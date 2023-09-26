@@ -5,6 +5,7 @@ import {UpdateAuthDto} from './dto/update-auth.dto';
 import {PaginationDto} from "../common/dtos/pagination.dto";
 import {AuthGuard} from "@nestjs/passport";
 import {JwtAuthGuard} from "./jwt-auth.guard";
+import {CreateAccountDto} from "./dto/create-account.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -41,4 +42,8 @@ export class AuthController {
         return this.authService.remove(id);
     }
 
+    @Post('/account')
+    addAccount(@Body() account: CreateAccountDto) {
+        return this.authService.addAccount(account);
+    }
 }
