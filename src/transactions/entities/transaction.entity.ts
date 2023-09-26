@@ -14,12 +14,6 @@ export class Transaction {
     type: string;
 
     @Column({
-        type: 'varchar',
-        length: 20,
-    })
-    from: string;
-
-    @Column({
         type: 'int'
     })
     amount: number;
@@ -31,13 +25,25 @@ export class Transaction {
     description: string;
 
     @Column({
-        type: 'date',
+        type: 'varchar',
+        length: 50
     })
-    date: Date;
+    date: string;
 
     @Column({
-        type: 'int',
+        type: 'uuid',
     })
-    categoryId: number;
+    categoryId: string;
+
+    @Column({
+        type: 'uuid',
+    })
+    accountId: string;
+
+    @Column({
+        type: 'uuid',
+        nullable: false
+    })
+    userId: string;
 
 }
