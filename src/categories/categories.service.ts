@@ -1,8 +1,8 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CreateCategoryDto} from './dto/create-category.dto';
 import {UpdateCategoryDto} from './dto/update-category.dto';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Category} from "./entities/category.entity";
+import {Category} from "./entities";
 import {DataSource, Repository} from "typeorm";
 import {PaginationDto} from "../common/dtos/pagination.dto";
 import {v4 as uuidv4, validate as isUUID} from 'uuid';
@@ -50,7 +50,7 @@ export class CategoriesService {
         if (isUUID(term)) {
             category = await this.categoryRepository.findOneBy({id: term});
         } else {
-            const  queryBuilder = this.categoryRepository.createQueryBuilder('category');
+            const queryBuilder = this.categoryRepository.createQueryBuilder('category');
             category = await queryBuilder.where('category.name LIKE :name', {
                 name: `%${term}%`
             }).getOne();
@@ -63,14 +63,41 @@ export class CategoriesService {
         return category;
     }
 
-    async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    async update(id: string, updateCategoryDto: UpdateCategoryDto) {
         // TODO: Implementar actualización de categoría
+        const category = await this.categoryRepository.preload({
+            id: id,
+            ...updateCategoryDto
+        });
+        if (!category) throw new NotFoundException(`La categoria con id ${id} no existe`);
 
+        const queryRunner = this.datasource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
+        await queryRunner.manager.save(category);
+
+        await queryRunner.commitTransaction();
+        await queryRunner.release();
+
+        return category;
     }
 
-    async remove(id: number) {
+    async remove(id: string) {
         // TODO: Implementar eliminación de categoría
+        const category = await this.findOne(id);
+        if (!category) throw new NotFoundException(`La categoria con id ${id} no existe`);
+
+        try {
+            await this.categoryRepository.delete(id);
+            return {
+                message: 'La categoria ha sido eliminada'
+            }
+        } catch (error) {
+            return {
+                message: 'La categoria no ha podido ser eliminada'
+            }
+        }
     }
 
 

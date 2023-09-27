@@ -26,4 +26,11 @@ export class Category {
     })
     icon: string;
 
+    @Column({
+        type: "uuid",
+        nullable: true
+    })
+    userId: string;
+
+
 }

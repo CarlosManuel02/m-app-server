@@ -3,10 +3,8 @@ import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 @Entity({name: 'transactions'})
 export class Transaction {
 
-    @PrimaryGeneratedColumn({
-        type: 'int',
-    })
-    id: number;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
     @Column({
         type: 'varchar',
@@ -14,12 +12,6 @@ export class Transaction {
         enum: ['income', 'expense']
     })
     type: string;
-
-    @Column({
-        type: 'varchar',
-        length: 20,
-    })
-    from: string;
 
     @Column({
         type: 'int'
@@ -33,13 +25,24 @@ export class Transaction {
     description: string;
 
     @Column({
-        type: 'date',
+        type: 'date'
     })
     date: Date;
 
     @Column({
-        type: 'int',
+        type: 'uuid',
     })
-    categoryId: number;
+    categoryId: string;
+
+    @Column({
+        type: 'uuid',
+    })
+    accountId: string;
+
+    @Column({
+        type: 'uuid',
+        nullable: false
+    })
+    userId: string;
 
 }
