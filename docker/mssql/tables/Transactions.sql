@@ -5,8 +5,8 @@ create table dbo.Transactions
     type        varchar(10)
         check ([type] = 'expense' OR [type] = 'income'),
     amount      int,
-    description text,
-    date        varchar(50),
+    description varchar(max),
+    date        date,
     categoryId  uniqueidentifier,
     accountId   uniqueidentifier,
     userId      uniqueidentifier not null,
