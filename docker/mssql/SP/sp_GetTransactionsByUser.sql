@@ -90,3 +90,20 @@ from dbo.Transactions t
 where t.categoryId = @categoryId
 go
 EXECUTE sp_GetTransactionsByCategory @categoryId = 'F165E42F-F083-4D14-A485-5B9075E9C1BC';
+
+
+-- show total of transactions
+alter PROCEDURE showTotalOfTransaction
+@userId uniqueidentifier
+as
+select
+    U.email,
+    T.type,
+    SUM(T.amount) as 'Total'
+from Transactions T
+         join dbo.Users U on U.id = T.userId
+where U.id = @userId
+group by type, U.email
+
+go
+EXECUTE showTotalOfTransaction '9F9AF854-19D4-4A04-8021-8A7B744B919E'
