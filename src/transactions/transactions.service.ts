@@ -17,7 +17,6 @@ export class TransactionsService {
         private readonly transactionRepository: Repository<Transaction>,
         private readonly authService: AuthService,
         private readonly datasource: DataSource,
-
     ) {
     }
 
@@ -49,7 +48,6 @@ export class TransactionsService {
         }
 
 
-
     }
 
     async findAll(pagination: PaginationDto) {
@@ -73,35 +71,66 @@ export class TransactionsService {
             }).getOne();
         }
         if (!transaction) {
-            throw new BadRequestException('Usuario no encontrado');
+            throw new BadRequestException('Transaccion no encontrado');
         }
 
         return transaction;
     }
 
     async update(id: string, updateTransactionDto: UpdateTransactionDto) {
-        const transaction = await this.transactionRepository.preload({
-            id: id,
-            ...updateTransactionDto
-        });
-        if (!transaction) throw new BadRequestException('Transacción no encontrada');
-
-        const queryRunner = this.datasource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        await queryRunner.manager.save(transaction);
-
-        await queryRunner.commitTransaction();
-        await queryRunner.release();
-
-        return transaction;
+        if (updateTransactionDto.type === 'expense') {
+            const account = await this.authService.findAccountById(updateTransactionDto.userId, updateTransactionDto.accountId);
+            if (account.balance < updateTransactionDto.amount) {
+                return {
+                    message: 'No tienes suficiente saldo para realizar esta transacción',
+                    balance: account.balance
+                };
+            } else {
+                account.balance -= updateTransactionDto.amount;
+                await this.authService.updateAccount(account);
+                const transaction = await this.findOne(id);
+                if (!transaction) throw new BadRequestException('Transacción no encontrada');
+                return await this.transactionRepository.save({
+                    ...transaction,
+                    ...updateTransactionDto
+                });
+            }
+        } else {
+            const account = await this.authService.findAccountById(updateTransactionDto.userId, updateTransactionDto.accountId);
+            account.balance = account.balance + updateTransactionDto.amount;
+            await this.authService.updateAccount(account);
+            const transaction = await this.findOne(id);
+            if (!transaction) throw new BadRequestException('Transacción no encontrada');
+            return await this.transactionRepository.save({
+                ...transaction,
+                ...updateTransactionDto
+            });
+        }
     }
+
 
     async remove(id: string) {
         const transaction = await this.findOne(id);
         if (!transaction) throw new BadRequestException('Transacción no encontrada');
-        return await this.transactionRepository.remove(transaction);
+
+        if (transaction.type == 'expense'){
+            const account = await this.authService.findAccountById(transaction.userId, transaction.accountId);
+            account.balance += transaction.amount;
+            await this.authService.updateAccount(account);
+            return {
+                message: 'Transacción eliminada',
+                transaction: await this.transactionRepository.remove(transaction)
+            }
+        } else {
+            const account = await this.authService.findAccountById(transaction.userId, transaction.accountId);
+            account.balance -= transaction.amount;
+            await this.authService.updateAccount(account);
+            return {
+                message: 'Transacción eliminada',
+                transaction: await this.transactionRepository.remove(transaction)
+            }
+        }
+
     }
 
     async getTransactionsByAccount(accountId: string) {
