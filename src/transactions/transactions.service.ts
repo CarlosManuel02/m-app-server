@@ -16,14 +16,12 @@ export class TransactionsService {
         @InjectRepository(Transaction)
         private readonly transactionRepository: Repository<Transaction>,
         private readonly authService: AuthService,
-        private readonly datasource: DataSource,
     ) {
     }
 
     async create(createTransactionDto: CreateTransactionDto) {
         const {accountId, amount, userId, type} = createTransactionDto;
         createTransactionDto.id = uuidv4();
-        console.log(createTransactionDto)
         if (type === 'expense') {
             // TODO: Check if the user has enough balance to make the transaction
             const account = await this.authService.findAccountById(userId, accountId);
@@ -36,6 +34,7 @@ export class TransactionsService {
                 account.balance -= amount;
                 await this.authService.updateAccount(account);
                 const transaction = this.transactionRepository.create(createTransactionDto);
+                transaction.date = new Date(transaction.date)
                 return await this.transactionRepository.save(transaction);
             }
 
@@ -44,6 +43,7 @@ export class TransactionsService {
             account.balance = account.balance + amount;
             await this.authService.updateAccount(account);
             const transaction = this.transactionRepository.create(createTransactionDto);
+            transaction.date = new Date(transaction.date)
             return await this.transactionRepository.save(transaction);
         }
 

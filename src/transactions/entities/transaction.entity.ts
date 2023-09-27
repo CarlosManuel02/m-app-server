@@ -25,10 +25,9 @@ export class Transaction {
     description: string;
 
     @Column({
-        type: 'varchar',
-        length: 50
+        type: 'date'
     })
-    date: string;
+    date: Date;
 
     @Column({
         type: 'uuid',
