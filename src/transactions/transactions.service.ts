@@ -23,7 +23,6 @@ export class TransactionsService {
         const {accountId, amount, userId, type} = createTransactionDto;
         createTransactionDto.id = uuidv4();
         if (type === 'expense') {
-            // TODO: Check if the user has enough balance to make the transaction
             const account = await this.authService.findAccountById(userId, accountId);
             if (account.balance < amount) {
                 return {

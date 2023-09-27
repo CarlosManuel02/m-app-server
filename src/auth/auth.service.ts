@@ -1,7 +1,7 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateAuthDto} from './dto/create-auth.dto';
 import {UpdateAuthDto} from './dto/update-auth.dto';
-import {User} from "./entities/user.entity";
+import {User} from "./entities";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DataSource, Repository} from "typeorm";
 import {v4 as uuidv4, validate as isUUID} from 'uuid';
@@ -60,7 +60,6 @@ export class AuthService {
     }
 
     async findBy(term: string) {
-        console.log('term', term)
         let user: User;
         if (isUUID(term)) {
             user = await this.authRepository.findOneBy({id: term})
