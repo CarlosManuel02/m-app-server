@@ -1,0 +1,21 @@
+version: '3'
+#MySQL
+#  DB_PORT=3306
+#  DB_HOST=localhost
+#  DB_NAME=Agenda
+#  DB_USER=dbAdmin
+#  DB_PASSWORD=sql
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
