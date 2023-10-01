@@ -1,4 +1,5 @@
-import {BeforeInsert, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {User} from "../../auth/entities";
 @Entity({
     name: "Categories",
     schema: "dbo"
@@ -26,10 +27,7 @@ export class Category {
     })
     icon: string;
 
-    @Column({
-        type: "uuid",
-        nullable: true
-    })
+    @OneToMany(() => User, user => user.id)
     userId: string;
 
 

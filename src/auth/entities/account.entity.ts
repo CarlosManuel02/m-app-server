@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {User} from "./user.entity";
 
 @Entity({
     name: 'accounts'
@@ -21,9 +22,7 @@ export class Account{
     })
     balance: number;
 
-    @Column('uuid', {
-        nullable: false,
-    })
+    @ManyToOne(() => User, user => user.id)
     userId: string;
 
 

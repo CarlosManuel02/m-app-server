@@ -1,4 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Category} from "../../categories/entities";
+import {Account, User} from "../../auth/entities";
 
 @Entity({name: 'transactions'})
 export class Transaction {
@@ -28,20 +30,13 @@ export class Transaction {
     })
     date: Date;
 
-    @Column({
-        type: 'uuid',
-    })
+    @ManyToOne(() => Category, category => category.id)
     categoryId: string;
 
-    @Column({
-        type: 'uuid',
-    })
+    @ManyToOne(() => Account, account => account.id)
     accountId: string;
 
-    @Column({
-        type: 'uuid',
-        nullable: false
-    })
+    @ManyToOne(() => User, user => user.id)
     userId: string;
 
 }
