@@ -129,7 +129,8 @@ export class AuthService {
             const token = await this.generateJWT(user);
 
             return {
-                token
+                token,
+                status: 200,
             }
 
         } else {

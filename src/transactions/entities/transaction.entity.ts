@@ -8,8 +8,7 @@ export class Transaction {
 
     @Column({
         type: 'varchar',
-        length: 10,
-        enum: ['income', 'expense']
+        length: 10
     })
     type: string;
 
