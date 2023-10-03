@@ -27,7 +27,11 @@ export class Category {
     })
     icon: string;
 
-    @OneToMany(() => User, user => user.id)
+    @Column({
+        type: "char",
+        length: 36,
+        nullable: false
+    })
     userId: string;
 
 

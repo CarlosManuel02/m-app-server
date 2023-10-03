@@ -13,9 +13,9 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto);
   }
 
-  @Get()
-  findAll(@Query()  pagination: PaginationDto) {
-    return this.categoriesService.findAll(pagination);
+  @Get('/all/:userId')
+  findAll(@Query()  pagination: PaginationDto, @Param() userId: string) {
+    return this.categoriesService.findAll(pagination, userId);
   }
 
   @Get(':term')

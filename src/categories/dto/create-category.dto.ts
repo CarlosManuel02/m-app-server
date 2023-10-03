@@ -9,7 +9,6 @@ export class CreateCategoryDto {
     id: string;
 
     @IsString()
-
     name: string;
 
     @IsString()
@@ -21,6 +20,5 @@ export class CreateCategoryDto {
     icon: string;
 
     @IsString()
-    @IsOptional()
     userId: string;
 }

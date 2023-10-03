@@ -35,15 +35,22 @@ export class CategoriesService {
 
     }
 
-    async findAll(Pagination: PaginationDto) {
-        const {limit = 10, offset = 0} = Pagination;
+    async findAll(Pagination: PaginationDto, user: any) {
+        const { limit = 10, offset = 0 } = Pagination;
+        console.log(user.userId);
 
-        return this.categoryRepository.find({
-            skip: offset,
-            take: limit,
-        });
+        // Utiliza la función "find" para buscar registros en la base de datos
+        const categories = await this.categoryRepository.findBy({
+            userId: user.userId
+        })
 
+
+        return {
+            data: categories,
+            count: categories.length
+        };
     }
+
 
     async findOne(term: string) {
         let category: Category;
