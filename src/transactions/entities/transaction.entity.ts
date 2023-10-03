@@ -30,13 +30,22 @@ export class Transaction {
     })
     date: Date;
 
-    @ManyToOne(() => Category, category => category.id)
+    @Column({
+        type: 'varchar',
+        length: 36
+    })
     categoryId: string;
 
-    @ManyToOne(() => Account, account => account.id)
+    @Column({
+        type: 'varchar',
+        length: 36
+    })
     accountId: string;
 
-    @ManyToOne(() => User, user => user.id)
+    @Column({
+        type: 'varchar',
+        length: 36
+    })
     userId: string;
 
 }

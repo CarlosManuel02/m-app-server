@@ -24,7 +24,7 @@ export class TransactionsService {
         createTransactionDto.id = uuidv4();
         if (type === 'expense') {
             const account = await this.authService.findAccountById(userId, accountId);
-            if (account.balance < amount) {
+            if (account.balance < amount || account.balance === 0) {
                 return {
                     message: 'No tienes suficiente saldo para realizar esta transacción',
                     balance: account.balance
@@ -37,13 +37,17 @@ export class TransactionsService {
                 return await this.transactionRepository.save(transaction);
             }
 
-        } else {
+        } else if (type === 'income') {
             const account = await this.authService.findAccountById(userId, accountId);
             account.balance = account.balance + amount;
             await this.authService.updateAccount(account);
             const transaction = this.transactionRepository.create(createTransactionDto);
             transaction.date = new Date(transaction.date)
-            return await this.transactionRepository.save(transaction);
+            return {
+                message: 'Transacción creada',
+                transaction: await this.transactionRepository.save(transaction),
+                balance: account.balance
+            }
         }
 
 
