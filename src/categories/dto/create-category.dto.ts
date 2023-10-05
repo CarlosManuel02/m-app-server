@@ -20,5 +20,9 @@ export class CreateCategoryDto {
     icon: string;
 
     @IsString()
+    @IsOptional()
+    type: string;
+
+    @IsString()
     userId: string;
 }

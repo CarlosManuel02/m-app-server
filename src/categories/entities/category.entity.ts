@@ -28,6 +28,12 @@ export class Category {
     icon: string;
 
     @Column({
+        type: "varchar",
+        length: 20
+    })
+    type: string;
+
+    @Column({
         type: "char",
         length: 36,
         nullable: false

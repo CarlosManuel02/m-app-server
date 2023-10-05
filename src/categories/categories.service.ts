@@ -28,16 +28,18 @@ export class CategoriesService {
         }
 
         createCategoryDto.id = uuidv4();
-        createCategoryDto.icon = "https://picsum.photos/200/300";
+        // createCategoryDto.icon = "https://picsum.photos/200/300";
 
         category = this.categoryRepository.create(createCategoryDto);
-        return await this.categoryRepository.save(category);
+        return {
+            data: await this.categoryRepository.save(category),
+            message: 'Category created successfully'
+        }
 
     }
 
     async findAll(Pagination: PaginationDto, user: any) {
         const { limit = 10, offset = 0 } = Pagination;
-        console.log(user.userId);
 
         // Utiliza la función "find" para buscar registros en la base de datos
         const categories = await this.categoryRepository.findBy({
