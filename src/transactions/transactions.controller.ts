@@ -13,9 +13,9 @@ export class TransactionsController {
     return this.transactionsService.create(createTransactionDto);
   }
 
-  @Get()
-  findAll(@Query() pagination: PaginationDto) {
-    return this.transactionsService.findAll(pagination);
+  @Get("/all/:userId")
+  async findAll(@Query() pagination: PaginationDto, @Param() userId: string) {
+    return await this.transactionsService.findAll(pagination, userId);
   }
 
   @Get(':term')

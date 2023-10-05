@@ -53,13 +53,12 @@ export class TransactionsService {
 
     }
 
-    async findAll(pagination: PaginationDto) {
+    async findAll(pagination: PaginationDto, user:any) {
         const {limit = 10, offset = 0} = pagination;
 
-        return this.transactionRepository.find({
-            skip: offset,
-            take: limit,
-        });
+        return this.transactionRepository.findBy({
+            userId: user.userId
+        })
     }
 
     async findOne(id: string) {
