@@ -9,6 +9,7 @@ export class CreateAuthDto {
 
     @IsString()
     @MinLength(4)
+    @IsOptional()
     username: string;
 
     @IsString()

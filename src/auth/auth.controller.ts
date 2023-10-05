@@ -32,6 +32,14 @@ export class AuthController {
         return this.authService.findBy(term);
     }
 
+    // het the token from the request header
+    @Post('/renew')
+    getToken(@Req() req) {
+        const token = req.headers.token;
+        console.log(token)
+        return this.authService.renewToken(token);
+    }
+
     @Patch('/:id')
     update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
         return this.authService.update(id, updateAuthDto);

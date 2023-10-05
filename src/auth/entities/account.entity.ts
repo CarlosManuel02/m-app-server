@@ -22,7 +22,10 @@ export class Account{
     })
     balance: number;
 
-    @ManyToOne(() => User, user => user.id)
+    @Column('varchar', {
+        nullable: false,
+        length: 36,
+    })
     userId: string;
 
 

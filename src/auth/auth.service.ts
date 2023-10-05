@@ -130,6 +130,7 @@ export class AuthService {
 
             return {
                 token,
+                user,
                 status: 200,
             }
 
@@ -140,6 +141,21 @@ export class AuthService {
         }
 
 
+    }
+
+    async renewToken(token: string) {
+        console.log(token)
+        const payload = await this.jwtService.verify(token, {
+            secret: process.env.JWT_SECRET
+        });
+        const user = await this.findBy(payload.email);
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+        const newToken = await this.generateJWT(user);
+        return {
+            token: newToken,
+            user,
+            status: 200,
+        }
     }
 
     async generateJWT(createAuthDto: CreateAuthDto | User) {
