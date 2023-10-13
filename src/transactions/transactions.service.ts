@@ -53,12 +53,27 @@ export class TransactionsService {
 
     }
 
-    async findAll(pagination: PaginationDto, user:any) {
+    async findAll(pagination: PaginationDto, user: any) {
         const {limit = 10, offset = 0} = pagination;
 
         return this.transactionRepository.findBy({
             userId: user.userId
         })
+    }
+
+    async findAllBy(term: string) {
+        let transaction: Transaction[];
+
+        const queryBuilder = this.transactionRepository.createQueryBuilder('transaction');
+        transaction = await queryBuilder.where('amount LIKE :name', {
+            name: `%${term}%`
+        }).getMany()
+
+        if (!transaction) {
+            throw new BadRequestException('Transaccion no encontrado');
+        }
+
+        return transaction;
     }
 
     async findOne(id: string) {
@@ -68,7 +83,7 @@ export class TransactionsService {
             transaction = await this.transactionRepository.findOneBy({id: id});
         } else {
             const queryBuilder = this.transactionRepository.createQueryBuilder('transaction');
-            transaction = await queryBuilder.where('name LIKE :name', {
+            transaction = await queryBuilder.where('amount LIKE :name', {
                 name: `%${id}%`
             }).getOne();
         }
@@ -103,10 +118,15 @@ export class TransactionsService {
             await this.authService.updateAccount(account);
             const transaction = await this.findOne(id);
             if (!transaction) throw new BadRequestException('Transacción no encontrada');
-            return await this.transactionRepository.save({
+            const result = await this.transactionRepository.save({
                 ...transaction,
                 ...updateTransactionDto
             });
+            return {
+                message: 'Transaction updated',
+                status: 200,
+                transaction: result,
+            }
         }
     }
 
@@ -115,7 +135,7 @@ export class TransactionsService {
         const transaction = await this.findOne(id);
         if (!transaction) throw new BadRequestException('Transacción no encontrada');
 
-        if (transaction.type == 'expense'){
+        if (transaction.type == 'expense') {
             const account = await this.authService.findAccountById(transaction.userId, transaction.accountId);
             account.balance += transaction.amount;
             await this.authService.updateAccount(account);
