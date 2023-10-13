@@ -36,7 +36,7 @@ export class AuthController {
     @Post('/renew')
     getToken(@Req() req) {
         const token = req.headers.token;
-        console.log(token)
+        // console.log(token)
         return this.authService.renewToken(token);
     }
 
@@ -53,5 +53,10 @@ export class AuthController {
     @Post('/account')
     addAccount(@Body() account: CreateAccountDto) {
         return this.authService.addAccount(account);
+    }
+
+    @Get('/all/:userId')
+    getAllAcounts(@Param('id') id: string){
+        return this.authService.getAllAcounts(id)
     }
 }

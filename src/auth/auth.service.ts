@@ -46,7 +46,8 @@ export class AuthService {
         await this.authRepository.save(auth);
         return {
             ...auth,
-            token
+            token,
+            status: 200,
         }
     }
 
@@ -221,5 +222,15 @@ export class AuthService {
         await queryRunner.release();
 
         return account;
+    }
+
+    async getAllAcounts(id: string) {
+        const accounts = await this.accountRepository.findBy({
+            userId: id
+        })
+        return {
+            data: accounts,
+            length: accounts.length
+        }
     }
 }
