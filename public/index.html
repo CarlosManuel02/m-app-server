@@ -2,23 +2,321 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NestJS API Documentation</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
         }
-        h1{
-            color: #ffffff;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2, h3 {
             text-align: center;
-            margin-top: 200px;
         }
+
+        p {
+            text-align: justify;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .lang-json {
+            color: #000;
+        }
+
+        /* Estilos del menú lateral */
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            border-radius: 5px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            color: #ff5733;
+        }
+
     </style>
 </head>
 <body>
-<h1>
-    You don't have permission to access this page.
-</h1>
+<div class="sidebar">
+    <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#running-the-app">Running the app</a></li>
+        <li><a href="#test">Test</a></li>
+        <li><a href="#crud-operations-and-endpoints">CRUD Operations and Endpoints</a></li>
+        <li><a href="#users">Users</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#transactions">Transactions</a></li>
+    </ul>
+</div>
+<div class="container">
+    <p align="center">
+        <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200"
+                                                         alt="Nest Logo"/></a>
+    </p>
+    <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building
+        efficient and scalable server-side applications.</p>
+    <h2 id="description">Description</h2>
+    <p>A simple NestJS API to Register Payments and The monthly spending of a user every month. The API is built using
+        NestJS
+        and MySQL as the database.</p>
+    <h2 id="installation">Installation</h2>
+    <pre><code class="lang-bash">$ npm <span class="hljs-keyword">install</span></code></pre>
+    <h2 id="running-the-app">Running the app</h2>
+    <pre><code class="lang-bash"><span class="hljs-comment"># development</span>
+$ npm <span class="hljs-keyword">run</span> start
+<span class="hljs-comment"># watch mode</span>
+$ npm <span class="hljs-keyword">run</span> start:dev
+<span class="hljs-comment"># production mode</span>
+$ npm <span class="hljs-keyword">run</span> start:prod</code></pre>
+    <h2 id="test">Test</h2>
+    <p>Work in progress</p>
+    <h1 id="crud-operations-and-endpoints">CRUD Operations and Endpoints</h1>
+
+    <h2 id="users">Users</h2>
+    <p>The users endpoint is used to create, login, get, update and delete users. Also, there is an endpoint to Create
+        an
+        account for a user.
+        The account is where the user will register the amount of money he/she has currently.</p>
+
+    <h3 id="create-user">Create User</h3>
+    <pre><code class="lang-bash">POST /api/auth/new</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "username": "Test",
+  "email": "test@example.com",
+  "password": "12345678"
+}
+</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "",
+    "username": "",
+    "email": ""
+  }
+}
+</code></pre>
+
+    <h3 id="login-user">Login User</h3>
+    <pre><code class="lang-bash">POST /api/auth</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "email": "carlos@example.com",
+  "password": "12345678"
+}
+</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "status": 201
+}
+</code></pre>
+
+    <h3 id="get-user">Get User</h3>
+    <pre><code class="lang-bash">GET /api/auth/:term</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "id": "",
+  "username": "",
+  "email": ""
+}
+</code></pre>
+
+    <h3 id="get-all-users">Get all Users</h3>
+    <pre><code class="lang-bash">GET /api/auth/all</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+[
+  {
+    "id": "",
+    "username": "",
+    "email": ""
+  },
+  {
+    "id": "",
+    "username": "",
+    "email": ""
+  }
+]
+</code></pre>
+
+    <h3 id="update-user">Update User</h3>
+    <pre><code class="lang-bash">PATCH /api/auth/:id</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "username": "Carlos",
+  "email": "carlos@example.com",
+  "password": "12345678"
+}
+</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "id": "",
+  "username": "",
+  "email": ""
+}
+</code></pre>
+
+    <h3 id="delete-user">Delete User</h3>
+    <pre><code class="lang-bash">DELETE /api/auth/:id</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "result": "",
+  "message": "Usuario eliminado correctamente"
+}
+</code></pre>
+
+    <h3 id="create-account">Create Account</h3>
+    <pre><code class="lang-bash">POST /api/auth/account</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "name": "Cask",
+  "balance": 3234.00,
+  "userId": "1"
+}
+</code></pre>
+    <p>response:</p>
+    <pre><code class="lang-json">
+{
+  "account",
+  "message": "Cuenta agregada correctamente"
+}
+</code></pre>
+
+    <h2 id="categories">Categories</h2>
+    <p>The categories are used to classify the payments that the user will register. The categories are created by the
+        user and
+        can only be seen by the user that created them.</p>
+
+    <h3 id="create-category">Create Category</h3>
+    <pre><code class="lang-bash">POST /api/categories/new</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "name": "Gifs",
+  "currency": "USD",
+  "userId": "0ec5693e-3ae6-49c6-b998-54029f279207"
+}
+</code></pre>
+
+    <h3 id="get-category">Get Category</h3>
+    <pre><code class="lang-bash">GET /api/categories/:term</code></pre>
+
+    <h3 id="get-all-categories">Get all Categories</h3>
+    <pre><code class="lang-bash">GET /api/categories/</code></pre>
+
+    <h3 id="update-category">Update Category</h3>
+    <pre><code class="lang-bash">PATCH /api/categories/:id</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "name": "Gifs",
+  "currency": "USD",
+  "userId": "0ec5693e-3ae6-49c6-b998-54029f279207"
+}
+</code></pre>
+
+    <h3 id="delete-category">Delete Category</h3>
+    <pre><code class="lang-bash">DELETE /api/categories/:id</code></pre>
+
+    <h2 id="transactions">Transactions</h2>
+    <p>The transactions are the payments that the user will register. The transactions can be either an income or an
+        expense.
+        The transactions are created when the user registers a payment. The transactions can be seen by the user that
+        created,
+        and will be displayed in the user's dashboard in a calendar.</p>
+
+    <h3 id="create-transaction">Create Transaction</h3>
+    <pre><code class="lang-bash">POST /api/transactions/new</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "type": "income",
+  "amount": 3000,
+  "description": "Ejemplo de descripción",
+  "date": "2023-09-26",
+  "categoryId": "1",
+  "accountId": "1",
+  "userId": "1"
+}
+</code></pre>
+
+    <h3 id="get-transaction">Get Transaction</h3>
+    <pre><code class="lang-bash">GET /api/transactions/:term</code></pre>
+
+    <h3 id="get-all-transactions">Get all Transactions</h3>
+    <pre><code class="lang-bash">GET /api/transactions/</code></pre>
+
+    <h3 id="update-transaction">Update Transaction</h3>
+    <pre><code class="lang-bash">PATCH /api/transactions/:id</code></pre>
+    <p>body:</p>
+    <pre><code class="lang-json">
+{
+  "type": "expense",
+  "amount": 2000,
+  "description": "Ejemplo de descripción",
+  "date": "2023-09-26",
+  "categoryId": "1",
+  "accountId": "1",
+  "userId": "1"
+}
+</code></pre>
+
+    <h3 id="delete-transaction">Delete Transaction</h3>
+    <pre><code class="lang-bash">DELETE /api/transactions/:id</code></pre>
+
+
+</div>
 </body>
 </html>

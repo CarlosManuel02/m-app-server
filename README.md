@@ -60,6 +60,19 @@ body:
 }
 ```
 
+response:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "",
+    "username": "",
+    "email": ""
+    }
+}
+```
+
 ### Login User
 
 ```bash
@@ -75,16 +88,48 @@ body:
 }
 ```
 
+response:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "status": 201
+}
+```
+
 ### Get User
 
 ```bash
 GET /api/auth/:term
+```
+response:
+```json
+{
+  "id": "",
+  "username": "",
+  "email": ""
+}
 ```
 
 ### Get all Users
 
 ```bash
 GET /api/auth/all
+```
+
+response:
+```json
+[
+  {
+    "id": "",
+    "username": "",
+    "email": ""
+  },
+  {
+    "id": "",
+    "username": "",
+    "email": ""
+  }
+]
 ```
 
 ### Update User
@@ -102,11 +147,27 @@ body:
   "password": "12345678"
 }
 ```
+response:
+```json
+{
+  "id": "",
+  "username": "",
+  "email": ""
+}
+```
 
 ### Delete User
 
 ```bash
 DELETE /api/auth/:id
+```
+
+response:
+```json
+{
+  "result": "",
+  "message": "Usuario eliminado correctamente"
+}
 ```
 
 ### Create Account
@@ -122,6 +183,13 @@ body:
   "name": "Cask",
   "balance": 3234.00,
   "userId": "1"
+}
+```
+response:
+```json
+{
+  "account",
+  "message": 'Cuenta agregada correctamente'
 }
 ```
 

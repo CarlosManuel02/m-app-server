@@ -89,7 +89,11 @@ export class CategoriesService {
         await queryRunner.commitTransaction();
         await queryRunner.release();
 
-        return category;
+        return {
+            data: category,
+            status: 200,
+            message: 'Category updated'
+        }
     }
 
     async remove(id: string) {
